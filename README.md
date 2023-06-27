@@ -1,0 +1,63 @@
+# Jasin-Express_Front-End
+General layout of the project in eclipse:
+
+/JasinExpress
+  /
+  /
+  /
+  /
+  /src
+    /main
+      /java
+        /courier
+          /controller
+            AddCourierController.java
+          /dao
+            CourierDAO.java
+          /model
+            Courier.java
+        /db
+          ConnectionManager.java
+        /delivery
+          /controller
+            AddDeliveryController.java
+          /dao
+            DeliveryDAO.java
+          /model
+            Delivery.java
+        /parcel
+          /controller
+            AddParcelController.java
+          /dao
+            ParcelDAO.java
+          /model
+            Parcel.java
+        /staff
+          /controller
+            AddStaffController.java
+          /dao
+            StaffDAO.java
+          /model
+            Staff.java
+        /transaction
+          /controller
+            AddTransactionController.java
+          /dao
+            TransactionDAO.java
+          /model
+            Transaction.java
+      /webapp
+        /courier
+          AddCourier.jsp
+        /delivery
+          AddDelivery.jsp
+        /META-INF
+        /parcel
+          AddParcel.jsp
+        /staff
+          AddStaff.jsp
+        /transaction
+          AddTransaction.jsp
+        /WEB-INF
+
+These are just suggestions, feel free to edit~
