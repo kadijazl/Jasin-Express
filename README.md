@@ -84,5 +84,3 @@ General layout of the project in eclipse:
           ListTransaction.jsp
           UpdateTransaction.jsp
         /WEB-INF
-
-These are just suggestions, feel free to edit~
