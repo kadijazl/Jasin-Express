@@ -1,0 +1,153 @@
+package delivery.dao;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+import db.ConnectionManager;
+import delivery.model.Delivery;
+
+public class DeliveryDAO {
+	static Connection con = null;
+	static PreparedStatement ps = null;
+	static Statement stmt = null;
+	static ResultSet rs = null;
+	private int deli_id, total_parc;
+	private String deli_date;
+	
+	//addDelivery()
+	public void addDelivery(Delivery bean) {
+		deli_date=bean.getDeli_date();
+		total_parc=bean.getTotal_parc();
+		
+		try {			
+			//call getConnection() method
+			con = ConnectionManager.getConnection();
+			
+			//3. create statement
+			ps=con.prepareStatement("INSERT INTO delivery(deli_date,total_parc) VALUES(?,?)");	
+			ps.setString(1, deli_date);	
+			ps.setInt(2, total_parc);
+
+			//4. execute query
+			ps.executeUpdate();
+
+			//5. close connection
+			con.close();
+
+		}catch(Exception e) {
+			e.printStackTrace();
+		}		
+	}
+
+	//getAllDelivery()
+	public static List<Delivery> getAllDelivery() {
+		List<Delivery> delivery = new ArrayList<Delivery>();
+		
+		try {			
+			//call getConnection() method
+			con = ConnectionManager.getConnection();
+			
+			//3. create statement
+			stmt=con.createStatement();	
+			
+			//4. execute query
+			rs=stmt.executeQuery("SELECT * FROM delivery ORDER BY deli_id");
+			while(rs.next()) {
+				Delivery d = new Delivery();
+				d.setDeli_id(rs.getInt("deli_id"));
+				d.setDeli_date(rs.getString("deli_date"));
+				d.setTotal_parc(rs.getInt("total_parc"));
+				delivery.add(d);
+			}
+
+			//5. close connection
+			con.close();
+
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return delivery;
+	}
+	
+	//getDeliveryById()
+	public static Delivery getDeliveryById(int deli_id) {
+		Delivery delivery = new Delivery();
+		
+		try {
+			//call getConnection() method
+			con = ConnectionManager.getConnection();
+
+			//3. create statement 
+			ps=con.prepareStatement("SELECT * FROM delivery WHERE deli_id=?");
+			ps.setInt(1, deli_id); 
+
+			//4. execute query
+			rs=ps.executeQuery();	
+				
+			if(rs.next()) {	
+				delivery.setDeli_id(rs.getInt("deli_id"));
+				delivery.setDeli_date(rs.getString("deli_date"));
+				delivery.setTotal_parc(rs.getInt("total_parc"));
+			}
+
+			//5. close connection
+			con.close();
+
+		}catch(Exception e) {
+			e.printStackTrace();	
+		}			
+		return delivery;
+	} 
+	
+	//deleteDelivery()
+	public void deleteDelivery(int deli_id) {
+		try {
+			//call getConnection() method
+			con = ConnectionManager.getConnection();
+
+			//3. create statement 	
+			ps=con.prepareStatement("DELETE FROM delivery WHERE deli_id=?");
+			ps.setInt(1, deli_id);
+
+			//4. execute query
+			ps.executeUpdate();
+
+			//5. close connection
+			con.close();
+
+		}catch(Exception e) {
+			e.printStackTrace();	
+		}			
+	}
+	
+	//updateDelivery()
+	public void updateDelivery(Delivery bean) {
+		deli_id=bean.getDeli_id();		
+		deli_date=bean.getDeli_date();
+		total_parc=bean.getTotal_parc();
+
+		try {			
+			//call getConnection() method
+			con = ConnectionManager.getConnection();
+
+			//3. create statement
+			ps=con.prepareStatement("UPDATE delivery SET deli_date=?,total_parc=? WHERE deli_id=?");
+			ps.setString(1, deli_date);
+			ps.setInt(2, total_parc);
+			ps.setInt(3, deli_id);
+			
+			//4. execute query
+			ps.executeUpdate();
+
+			//5. close connection
+			con.close();
+
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+}
+

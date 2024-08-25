@@ -1,0 +1,60 @@
+package staff.controller;
+
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import staff.dao.StaffDAO;
+import staff.model.Staff;
+import java.io.IOException;
+
+/**
+ * Servlet implementation class UpdateStaffController
+ */
+public class UpdateStaffController extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+	private StaffDAO dao;      
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public UpdateStaffController() {
+        super();
+        dao = new StaffDAO();
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		//get id from input parameter
+		int staff_id = Integer.parseInt(request.getParameter("staff_id"));			
+
+		request.setAttribute("staff", StaffDAO.getStaffById(staff_id));
+						
+		RequestDispatcher view = request.getRequestDispatcher("updateStaff.jsp");
+		view.forward(request, response);
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		Staff staff = new Staff();
+		
+		staff.setStaff_id(Integer.parseInt(request.getParameter("staff_id")));
+		staff.setStaff_name(request.getParameter("staff_name"));
+		staff.setStaff_phonenum(request.getParameter("staff_phonenum"));
+		staff.setStaff_password(request.getParameter("staff_password"));
+		
+		dao.updateStaff(staff);
+		
+		request.setAttribute("staffs", StaffDAO.getAllStaff());
+		
+		RequestDispatcher view = request.getRequestDispatcher("listStaff.jsp");
+		view.forward(request, response);
+	}
+
+}

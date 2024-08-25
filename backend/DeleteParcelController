@@ -1,0 +1,42 @@
+package parcel.controller;
+
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import parcel.dao.ParcelDAO;
+import java.io.IOException;
+
+/**
+ * Servlet implementation class DeleteParcelController
+ */
+public class DeleteParcelController extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+	private ParcelDAO dao;   
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public DeleteParcelController() {
+        super();
+        dao = new ParcelDAO();
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		int parc_id = Integer.parseInt(request.getParameter("parc_id"));
+		
+		dao.deleteParcel(parc_id);
+		
+		request.setAttribute("parcels", ParcelDAO.getAllParcel());
+
+		RequestDispatcher view = request.getRequestDispatcher("listParcel.jsp");
+		view.forward(request, response);
+	}
+
+}

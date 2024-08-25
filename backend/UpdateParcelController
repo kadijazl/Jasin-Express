@@ -1,0 +1,62 @@
+package parcel.controller;
+
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import parcel.dao.ParcelDAO;
+import parcel.model.Parcel;
+import java.io.IOException;
+
+/**
+ * Servlet implementation class UpdateParcelController
+ */
+public class UpdateParcelController extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+	private ParcelDAO dao;   
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public UpdateParcelController() {
+        super();
+        dao = new ParcelDAO();
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		//get id from input parameter
+		int parc_id = Integer.parseInt(request.getParameter("parc_id"));			
+
+		request.setAttribute("parcel", ParcelDAO.getParcelById(parc_id));
+								
+		RequestDispatcher view = request.getRequestDispatcher("updateParcel.jsp");
+		view.forward(request, response);
+	}
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		Parcel parcel = new Parcel();
+		
+		parcel.setParc_id(Integer.parseInt(request.getParameter("parc_id")));
+		parcel.setTracking_num(request.getParameter("tracking_num"));
+		parcel.setReceiver_name(request.getParameter("receiver_name"));
+		parcel.setPhone_num(request.getParameter("phone_num"));
+		parcel.setLocation(request.getParameter("location"));
+		
+		dao.updateParcel(parcel);
+		
+		request.setAttribute("parcels", ParcelDAO.getAllParcel());
+		
+		RequestDispatcher view = request.getRequestDispatcher("listParcel.jsp");
+		view.forward(request, response);
+	}
+
+}

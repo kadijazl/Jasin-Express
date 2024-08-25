@@ -1,0 +1,159 @@
+package staff.dao;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+import db.ConnectionManager;
+import staff.model.Staff;
+
+public class StaffDAO {
+	static Connection con = null;
+	static PreparedStatement ps = null;
+	static Statement stmt = null;
+	static ResultSet rs = null;
+	private int staff_id;
+	private String staff_name,staff_phonenum,staff_password;
+	
+	//addStaff()
+		public void addStaff(Staff bean) {
+			staff_name=bean.getStaff_name();
+			staff_phonenum=bean.getStaff_phonenum();
+			staff_password=bean.getStaff_password();
+			
+			try {			
+				//call getConnection() method
+				con = ConnectionManager.getConnection();
+				
+				//3. create statement
+				ps=con.prepareStatement("INSERT INTO staff(staff_name,staff_phonenum,staff_password) VALUES(?,?,?)");	
+				ps.setString(1, staff_name);	
+				ps.setString(2, staff_phonenum);	
+				ps.setString(3, staff_password);	
+
+				//4. execute query
+				ps.executeUpdate();
+
+				//5. close connection
+				con.close();
+
+			}catch(Exception e) {
+				e.printStackTrace();
+			}		
+		}
+
+		//getAllStaff()
+		public static List<Staff> getAllStaff() {
+			List<Staff> staff = new ArrayList<Staff>();
+			
+			try {			
+				//call getConnection() method
+				con = ConnectionManager.getConnection();
+				
+				//3. create statement
+				stmt=con.createStatement();	
+				
+				//4. execute query
+				rs=stmt.executeQuery("SELECT * FROM staff ORDER BY staff_id");
+				while(rs.next()) {
+					Staff s = new Staff();
+					s.setStaff_id(rs.getInt("staff_id"));
+					s.setStaff_name(rs.getString("staff_name"));
+					s.setStaff_phonenum(rs.getString("staff_phonenum"));
+					s.setStaff_password(rs.getString("staff_password"));
+					staff.add(s);
+				}
+
+				//5. close connection
+				con.close();
+
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+			return staff;
+		}
+		
+		//getStaffById()
+		public static Staff getStaffById(int staff_id) {
+			Staff staff = new Staff();
+			
+			try {
+				//call getConnection() method
+				con = ConnectionManager.getConnection();
+
+				//3. create statement 
+				ps=con.prepareStatement("SELECT * FROM staff WHERE staff_id=?");
+				ps.setInt(1, staff_id); 
+
+				//4. execute query
+				rs=ps.executeQuery();	
+					
+				if(rs.next()) {	
+					staff.setStaff_id(rs.getInt("staff_id"));
+					staff.setStaff_name(rs.getString("staff_name"));
+					staff.setStaff_phonenum(rs.getString("staff_phonenum"));
+					staff.setStaff_password(rs.getString("staff_password"));
+				}
+
+				//5. close connection
+				con.close();
+
+			}catch(Exception e) {
+				e.printStackTrace();	
+			}			
+			return staff;
+		} 
+		
+		//deleteStaff()
+		public void deleteStaff(int staff_id) {
+			try {
+				//call getConnection() method
+				con = ConnectionManager.getConnection();
+
+				//3. create statement 	
+				ps=con.prepareStatement("DELETE FROM staff WHERE staff_id=?");
+				ps.setInt(1, staff_id);
+
+				//4. execute query
+				ps.executeUpdate();
+
+				//5. close connection
+				con.close();
+
+			}catch(Exception e) {
+				e.printStackTrace();	
+			}			
+		}
+		
+		//updateStaff()
+		public void updateStaff(Staff bean) {
+			staff_id=bean.getStaff_id();		
+			staff_name=bean.getStaff_name();
+			staff_phonenum=bean.getStaff_phonenum();
+			staff_password=bean.getStaff_password();
+
+			try {			
+				//call getConnection() method
+				con = ConnectionManager.getConnection();
+
+				//3. create statement
+				ps=con.prepareStatement("UPDATE staff SET staff_name=?,staff_phonenum=?,staff_password=? WHERE staff_id=?");
+				ps.setString(1,staff_name);
+				ps.setString(2,staff_phonenum);
+				ps.setString(3,staff_password);
+				ps.setInt(4,staff_id);
+				
+				//4. execute query
+				ps.executeUpdate();
+
+				//5. close connection
+				con.close();
+
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+}
+

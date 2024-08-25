@@ -1,0 +1,153 @@
+package transaction.dao;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+import db.ConnectionManager;
+import transaction.model.Transaction;
+
+public class TransactionDAO {
+	static Connection con = null;
+	static PreparedStatement ps = null;
+	static Statement stmt = null;
+	static ResultSet rs = null;
+	private int tran_id;
+	private String tran_date,receiver_name;
+	
+	//addTransaction()
+		public void addTransaction(Transaction bean) {
+			tran_date=bean.getTran_date();
+			receiver_name=bean.getReceiver_name();
+			
+			try {			
+				//call getConnection() method
+				con = ConnectionManager.getConnection();
+				
+				//3. create statement
+				ps=con.prepareStatement("INSERT INTO transaction(tran_date,receiver_name) VALUES(?,?)");	
+				ps.setString(1, tran_date);	
+				ps.setString(2, receiver_name);
+
+				//4. execute query
+				ps.executeUpdate();
+
+				//5. close connection
+				con.close();
+
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		//getAllTransaction()
+		public static List<Transaction> getAllTransaction(){
+			List<Transaction> transaction = new ArrayList<Transaction>();
+			
+			try {			
+				//call getConnection() method
+				con = ConnectionManager.getConnection();
+				
+				//3. create statement
+				stmt=con.createStatement();	
+				
+				//4. execute query
+				rs=stmt.executeQuery("SELECT * FROM transaction ORDER BY tran_id");
+				while(rs.next()) {
+					Transaction t = new Transaction();
+					t.setTran_id(rs.getInt("tran_id"));
+					t.setTran_date(rs.getString("tran_date"));
+					t.setReceiver_name(rs.getString("receiver_name"));
+					transaction.add(t);
+				}
+
+				//5. close connection
+				con.close();
+
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+			return transaction;
+		}
+		
+		//getTransactionById()
+		public static Transaction getTransactionById(int tran_id) {
+			Transaction transaction = new Transaction();
+			
+			try {
+				//call getConnection() method
+				con = ConnectionManager.getConnection();
+
+				//3. create statement 
+				ps=con.prepareStatement("SELECT * FROM transaction WHERE tran_id=?");
+				ps.setInt(1, tran_id); 
+
+				//4. execute query
+				rs=ps.executeQuery();	
+					
+				if(rs.next()) {	
+					transaction.setTran_id(rs.getInt("tran_id"));
+					transaction.setTran_date(rs.getString("tran_date"));
+					transaction.setReceiver_name(rs.getString("receiver_name"));
+				}
+
+				//5. close connection
+				con.close();
+
+			}catch(Exception e) {
+				e.printStackTrace();	
+			}			
+			return transaction;
+		} 
+
+		//deleteTransaction()	
+		public void deleteTransaction(int tran_id) {
+			try {
+				//call getConnection() method
+				con = ConnectionManager.getConnection();
+
+				//3. create statement 	
+				ps=con.prepareStatement("DELETE FROM transaction WHERE tran_id=?");
+				ps.setInt(1, tran_id);
+
+				//4. execute query
+				ps.executeUpdate();
+
+				//5. close connection
+				con.close();
+
+			}catch(Exception e) {
+				e.printStackTrace();	
+			}			
+		}
+
+		//updateTransaction()
+		public void updateTransaction(Transaction bean) {
+			tran_id=bean.getTran_id();		
+			tran_date=bean.getTran_date();
+			receiver_name=bean.getReceiver_name();
+
+			try {			
+				//call getConnection() method
+				con = ConnectionManager.getConnection();
+
+				//3. create statement
+				ps=con.prepareStatement("UPDATE transaction SET tran_date=?,receiver_name=? WHERE tran_id=?");
+				ps.setString(1, tran_date);
+				ps.setString(2, receiver_name);
+				ps.setInt(3, tran_id);
+
+				//4. execute query
+				ps.executeUpdate();
+
+				//5. close connection
+				con.close();
+
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+		}	
+}
+

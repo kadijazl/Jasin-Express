@@ -1,0 +1,60 @@
+package courier.controller;
+
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import courier.dao.CourierDAO;
+import courier.model.Courier;
+
+/**
+ * Servlet implementation class UpdateCourierController
+ */
+public class UpdateCourierController extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+    private CourierDAO dao;   
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public UpdateCourierController() {
+        super();
+        dao = new CourierDAO();
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		//get id from input parameter
+		int cour_id = Integer.parseInt(request.getParameter("cour_id"));			
+
+		request.setAttribute("courier", CourierDAO.getCourierById(cour_id));
+				
+		RequestDispatcher view = request.getRequestDispatcher("updateCourier.jsp");
+		view.forward(request, response);
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		Courier courier = new Courier();
+		
+		courier.setCour_id(Integer.parseInt(request.getParameter("cour_id")));
+		courier.setCour_name(request.getParameter("cour_name"));
+		courier.setOffice_phonenum(request.getParameter("office_phonenum"));
+		
+		dao.updateCourier(courier);
+		
+		request.setAttribute("couriers", CourierDAO.getAllCourier());
+		
+		RequestDispatcher view = request.getRequestDispatcher("listCourier.jsp");
+		view.forward(request, response);
+	}
+
+}

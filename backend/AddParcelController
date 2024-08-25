@@ -1,0 +1,49 @@
+package parcel.controller;
+
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import parcel.dao.ParcelDAO;
+import parcel.model.Parcel;
+import java.io.IOException;
+
+/**
+ * Servlet implementation class AddParcelController
+ */
+public class AddParcelController extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+    private ParcelDAO dao;   
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public AddParcelController() {
+        super();
+        dao = new ParcelDAO();
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		Parcel parcel = new Parcel();
+		
+		parcel.setParc_id(Integer.parseInt(request.getParameter("parc_id")));
+		parcel.setTracking_num(request.getParameter("tracking_num"));
+		parcel.setReceiver_name(request.getParameter("receiver_name"));
+		parcel.setPhone_num(request.getParameter("phone_num"));
+		parcel.setLocation(request.getParameter("location"));
+		
+		dao.addParcel(parcel);
+		
+		request.setAttribute("parcels", ParcelDAO.getAllParcel());
+		
+		RequestDispatcher view = request.getRequestDispatcher("listParcel.jsp");
+		view.forward(request, response);
+	}
+
+}
+

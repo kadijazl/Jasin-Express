@@ -1,0 +1,147 @@
+package courier.dao;
+import java.sql.*;
+import java.util.*;
+import courier.model.Courier;
+import db.ConnectionManager;
+
+public class CourierDAO {
+	static Connection con = null;
+	static PreparedStatement ps = null;
+	static Statement stmt = null;
+	static ResultSet rs = null;
+	private int cour_id;
+	private String cour_name,office_phonenum;
+	
+	//addCourier()
+	public void addCourier(Courier bean) {
+		cour_name=bean.getCour_name();
+		office_phonenum=bean.getOffice_phonenum();
+		
+		try {			
+			//call getConnection() method
+			con = ConnectionManager.getConnection();
+			
+			//3. create statement
+			ps=con.prepareStatement("INSERT INTO courier(cour_name,office_phonenum) VALUES(?,?)");	
+			ps.setString(1, cour_name);	
+			ps.setString(2, office_phonenum);
+
+			//4. execute query
+			ps.executeUpdate();
+
+			//5. close connection
+			con.close();
+
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	//getAllCourier()
+	public static List<Courier> getAllCourier(){
+		List<Courier> courier = new ArrayList<Courier>();
+		
+		try {			
+			//call getConnection() method
+			con = ConnectionManager.getConnection();
+			
+			//3. create statement
+			stmt=con.createStatement();	
+			
+			//4. execute query
+			rs=stmt.executeQuery("SELECT * FROM courier ORDER BY cour_id");
+			while(rs.next()) {
+				Courier c = new Courier();
+				c.setCour_id(rs.getInt("cour_id"));
+				c.setCour_name(rs.getString("cour_name"));
+				c.setOffice_phonenum(rs.getString("office_phonenum"));
+				courier.add(c);
+			}
+
+			//5. close connection
+			con.close();
+
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return courier;
+	}
+	
+	//getCourierById()
+	public static Courier getCourierById(int cour_id) {
+		Courier courier = new Courier();
+		
+		try {
+			//call getConnection() method
+			con = ConnectionManager.getConnection();
+
+			//3. create statement 
+			ps=con.prepareStatement("SELECT * FROM courier WHERE cour_id=?");
+			ps.setInt(1, cour_id); 
+
+			//4. execute query
+			rs=ps.executeQuery();	
+				
+			if(rs.next()) {	
+				courier.setCour_id(rs.getInt("cour_id"));
+				courier.setCour_name(rs.getString("cour_name"));
+				courier.setOffice_phonenum(rs.getString("office_phonenum"));
+			}
+
+			//5. close connection
+			con.close();
+
+		}catch(Exception e) {
+			e.printStackTrace();	
+		}			
+		return courier;
+	} 
+
+	//deleteCourier()	
+	public void deleteCourier(int cour_id) {
+		try {
+			//call getConnection() method
+			con = ConnectionManager.getConnection();
+
+			//3. create statement 	
+			ps=con.prepareStatement("DELETE FROM courier WHERE cour_id=?");
+			ps.setInt(1, cour_id);
+
+			//4. execute query
+			ps.executeUpdate();
+
+			//5. close connection
+			con.close();
+
+		}catch(Exception e) {
+			e.printStackTrace();	
+		}			
+	}
+
+	//updateCourier()
+	public void updateCourier(Courier bean) {
+		cour_id=bean.getCour_id();		
+		cour_name=bean.getCour_name();
+		office_phonenum=bean.getOffice_phonenum();
+
+		try {			
+			//call getConnection() method
+			con = ConnectionManager.getConnection();
+
+			//3. create statement
+			ps=con.prepareStatement("UPDATE courier SET cour_name=?,office_phonenum=? WHERE cour_id=?");
+			ps.setString(1, cour_name);
+			ps.setString(2, office_phonenum);
+			ps.setInt(3, cour_id);
+
+			//4. execute query
+			ps.executeUpdate();
+
+			//5. close connection
+			con.close();
+
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+}

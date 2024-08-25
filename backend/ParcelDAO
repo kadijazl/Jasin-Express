@@ -1,0 +1,164 @@
+package parcel.dao;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+import db.ConnectionManager;
+import parcel.model.Parcel;
+
+public class ParcelDAO {
+	static Connection con = null;
+	static PreparedStatement ps = null;
+	static Statement stmt = null;
+	static ResultSet rs = null;
+	private int parc_id;
+	private String tracking_num,receiver_name,phone_num,location;
+	
+	//addParcel()
+		public void addParcel(Parcel bean) {
+			tracking_num=bean.getTracking_num();
+			receiver_name=bean.getReceiver_name();
+			phone_num=bean.getPhone_num();
+			location=bean.getLocation();
+			
+			try {			
+				//call getConnection() method
+				con = ConnectionManager.getConnection();
+				
+				//3. create statement
+				ps=con.prepareStatement("INSERT INTO parcel(tracking_num,receiver_name,phone_num,location) VALUES(?,?,?,?)");		
+				ps.setString(1, tracking_num);
+				ps.setString(2, receiver_name);
+				ps.setString(3, phone_num);
+				ps.setString(4, location);
+
+				//4. execute query
+				ps.executeUpdate();
+
+				//5. close connection
+				con.close();
+
+			}catch(Exception e) {
+				e.printStackTrace();
+			}		
+		}
+
+		//getAllParcel()
+		public static List<Parcel> getAllParcel() {
+			List<Parcel> parcel = new ArrayList<Parcel>();
+			
+			try {			
+				//call getConnection() method
+				con = ConnectionManager.getConnection();
+				
+				//3. create statement
+				stmt=con.createStatement();	
+				
+				//4. execute query
+				rs=stmt.executeQuery("SELECT * FROM parcel ORDER BY parc_id");
+				while(rs.next()) {
+					Parcel p = new Parcel();
+					p.setParc_id(rs.getInt("parc_id"));
+					p.setTracking_num(rs.getString("tracking_num"));
+					p.setReceiver_name(rs.getString("receiver_name"));
+					p.setPhone_num(rs.getString("phone_num"));
+					p.setLocation(rs.getString("location"));
+					parcel.add(p);
+				}
+
+				//5. close connection
+				con.close();
+
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+			return parcel;
+		}
+		
+		//getParcelById()
+		public static Parcel getParcelById(int parc_id) {
+			Parcel parcel = new Parcel();
+			
+			try {
+				//call getConnection() method
+				con = ConnectionManager.getConnection();
+
+				//3. create statement 
+				ps=con.prepareStatement("SELECT * FROM parcel WHERE parc_id=?");
+				ps.setInt(1, parc_id); 
+
+				//4. execute query
+				rs=ps.executeQuery();	
+					
+				if(rs.next()) {	
+					parcel.setParc_id(rs.getInt("parc_id"));
+					parcel.setTracking_num(rs.getString("tracking_num"));
+					parcel.setReceiver_name(rs.getString("receiver_name"));
+					parcel.setPhone_num(rs.getString("phone_num"));
+					parcel.setLocation(rs.getString("location"));
+				}
+
+				//5. close connection
+				con.close();
+
+			}catch(Exception e) {
+				e.printStackTrace();	
+			}			
+			return parcel;
+		} 
+		
+		//deleteParcel()
+		public void deleteParcel(int parc_id) {
+			try {
+				//call getConnection() method
+				con = ConnectionManager.getConnection();
+
+				//3. create statement 	
+				ps=con.prepareStatement("DELETE FROM parcel WHERE parc_id=?");
+				ps.setInt(1, parc_id);
+
+				//4. execute query
+				ps.executeUpdate();
+
+				//5. close connection
+				con.close();
+
+			}catch(Exception e) {
+				e.printStackTrace();	
+			}			
+		}
+		
+		//updateParcel()
+		public void updateParcel(Parcel bean) {
+			parc_id=bean.getParc_id();
+			tracking_num=bean.getTracking_num();
+			receiver_name=bean.getReceiver_name();
+			phone_num=bean.getPhone_num();
+			location=bean.getLocation();
+
+			try {			
+				//call getConnection() method
+				con = ConnectionManager.getConnection();
+
+				//3. create statement
+				ps=con.prepareStatement("UPDATE parcel SET tracking_num=?,receiver_name=?,phone_num=?,location=? WHERE parc_id=?");
+				ps.setString(1, tracking_num);
+				ps.setString(2, receiver_name);
+				ps.setString(3, phone_num);
+				ps.setString(4, location);
+				ps.setInt(5, parc_id);
+				
+				//4. execute query
+				ps.executeUpdate();
+
+				//5. close connection
+				con.close();
+
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+		}	
+}	

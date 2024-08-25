@@ -1,0 +1,43 @@
+package transaction.controller;
+
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import transaction.dao.TransactionDAO;
+
+import java.io.IOException;
+
+/**
+ * Servlet implementation class DeleteTransactionController
+ */
+public class DeleteTransactionController extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+    private TransactionDAO dao;   
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public DeleteTransactionController() {
+        super();
+        dao = new TransactionDAO();
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		int tran_id = Integer.parseInt(request.getParameter("tran_id"));
+		
+		dao.deleteTransaction(tran_id);
+		
+		request.setAttribute("transactions", TransactionDAO.getAllTransaction());
+
+		RequestDispatcher view = request.getRequestDispatcher("listTransaction.jsp");
+		view.forward(request, response);
+	}
+
+}

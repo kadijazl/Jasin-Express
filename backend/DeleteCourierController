@@ -1,0 +1,43 @@
+package courier.controller;
+
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import courier.dao.CourierDAO;
+
+/**
+ * Servlet implementation class DeleteCourierController
+ */
+public class DeleteCourierController extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+	private CourierDAO dao;
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public DeleteCourierController() {
+        super();
+        dao=new CourierDAO();
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		int cour_id = Integer.parseInt(request.getParameter("cour_id"));
+		
+		dao.deleteCourier(cour_id);
+		
+		request.setAttribute("couriers", CourierDAO.getAllCourier());
+
+		RequestDispatcher view = request.getRequestDispatcher("listCourier.jsp");
+		view.forward(request, response);
+	}
+
+}
