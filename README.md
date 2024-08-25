@@ -1,4 +1,4 @@
-# Jasin-Express_Front-End
+# Jasin Express
 General layout of the project in eclipse:
 
 /JasinExpress
