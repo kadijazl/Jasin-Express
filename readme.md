@@ -16,4 +16,4 @@ Jasin Express is a full-stack Parcel Management System developed as a group cour
 - IDE:	Eclipse
 
 ##
-ℹ️ This is the backend for this project. The codes uploaded are just from my part.
+ℹ️ The codes uploaded are just from my part for backend.
