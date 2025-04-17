@@ -14,4 +14,4 @@ A **Parcel Management System** developed as part of a team coursework project. T
 - View all parcel statuses
 
 ##
-ℹ️ I'm in the backend team for this project. The codes uploaded are just from my part.
+ℹ️ This is the backend for this project. The codes uploaded are just from my part.
